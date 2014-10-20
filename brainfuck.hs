@@ -32,6 +32,16 @@ helloWorld = newState "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++.
 sierpinski = newState "[-]>++++[<++++++++>-]>++++++++[>++++<-]>>++>>>+>>>+<<<<<<<<<<[-[->+<]>[-<+>>>.<<]>>>[[->++++++++[>++++<-]>.<<[->+<]+>[->++++++++++<<+>]>.[-]>]]+<<<[-[->+<]+>[-<+>>>-[->+<]++>[-<->]<<<]<<<<]++++++++++.+++.[-]<]+++++"
 twentySix = newState "+++++[>+++++<-]>+"
 hello = newState "++++++++[>++++++++<-]>++++++++.---.+++++++..+++."
+nested = newState "+[[[++++>+[-]]]]"
+
+parserTest  :: Bool
+parserTest = outputMustBe helloWorld "Hello World!\n" &&
+    outputMustBe hello "HELLO" &&
+    (memory (run twentySix))!!1 == 26
+
+
+outputMustBe :: State -> String -> Bool
+outputMustBe state desiredOutput = ((output (run state))) == desiredOutput
 
 
 stepMemory :: State -> Int -> State
