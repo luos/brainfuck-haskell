@@ -128,4 +128,30 @@ modify memory dataPtr apply =
 replace :: Int -> Int -> [Int] ->  [Int]
 replace pos newVal list = take pos list ++ newVal : drop (pos+1) list
 
+--findBackwardsStart :: [Int] -> Int -> Int
+--findBackwardsStart :: memory currentPos = 1
 
+findLoopStart :: [Char] -> Int -> Int
+findLoopStart codes current =
+    countUntilLoopsClosed codes (current - 1) 0 0 (-1)
+
+findLoopEnd :: [Char] -> Int -> Int
+findLoopEnd codes current = 
+    countUntilLoopsClosed codes (current - 1) 0 0 (1)
+
+-- count bakcwards or forward while for current loop start/end point
+countUntilLoopsClosed :: [Char] -> Int -> Int -> Int -> Int -> Int
+countUntilLoopsClosed codes current opened closed direction = if (codes!!current == '[' && (opened - closed) == 0) then
+        current
+    else (
+        case codes!!current of 
+            ']' -> countUntilLoopsClosed codes (current + direction) (closed + 1) (opened) direction
+            '[' -> countUntilLoopsClosed codes (current + direction) (closed) (opened + 1) direction
+            otherwise -> countUntilLoopsClosed codes (current - 1) (closed) (opened) direction
+        )
+
+testCountBackwards :: Bool
+testCountBackwards =
+    ((countUntilLoopsClosed "[]" 0 0 0 (-1) ) == 0) &&
+    ((countUntilLoopsClosed ">>[abc]<<" 5 0 0 (-1)) == 2) &&
+    ((countUntilLoopsClosed "abc[a[bcd]e[f]g]9" 14 0 0 (-1)) == 3)
